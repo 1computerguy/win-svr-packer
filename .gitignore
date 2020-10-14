@@ -6,3 +6,11 @@ crash.log
 
 # For built boxes
 *.box
+
+# ISO files for testing
+*.iso
+
+*.7z
+*.zip
+*.ova
+/output*
