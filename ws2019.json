@@ -26,7 +26,7 @@
         "iso_url": "{{user `iso_url`}}",
         "iso_checksum": "{{user `iso_checksum`}}",
         "vcenter_server": "{{ user `vcenter_host` }}",
-        "host": "{{ user `esx_host` }},
+        "host": "{{ user `esx_host` }}",
         "username": "{{ user `vcenter_username` }}",
         "password": "{{ user `vcenter_password` }}",
         "insecure_connection": "true",
