@@ -39,7 +39,7 @@
 					<PlainText>true</PlainText>
 				</Password>
 				<Enabled>true</Enabled>
-				<Username>xAdministrator</Username>
+				<Username>Administrator</Username>
 			</AutoLogon>
 			<UserAccounts>
 				<AdministratorPassword>
