@@ -48,7 +48,7 @@
                 <OSImage>
                     <InstallFrom>
                         <MetaData wcm:action="add">
-                            <Key>/IMAGE/NAME</Key>
+                            <Key>/image/name</Key>
                             <Value>Windows Server 2019 SERVERDATACENTER</Value>
                         </MetaData>
                     </InstallFrom>

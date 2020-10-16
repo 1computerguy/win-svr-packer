@@ -49,7 +49,7 @@
           "network_card": "vmxnet3"
         }
       ],
-      "disk_controller_type": "lsilogic",
+      "disk_controller_type": "lsilogic-sas",
       "storage": [
         {
           "disk_size": 40960,
