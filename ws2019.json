@@ -1,27 +1,27 @@
 {
     "variables": {
-      "iso_url": "./ISO/windows-server-2019.iso",
-      "iso_checksum": "md5:37c51cc09182237ae2c30c9d8ce3c41e",
+      "iso_url": "./ISO/en_windows_server_2019_updated_sep_2020_x64_dvd_2d6f25f2.iso",
+      "iso_checksum": "sha256:7560B13B89EC3F5112DE75CAF69698EDDCADFC35FE8A82BE44BB5170B2B34DD7",
       "autounattend": "./windows/unattend/server-2019/autounattend.xml",
       "sysprep": "./windows/unattend/server-2019/unattend.xml",
       "template_name": "WinSrv2019-Template",
       "output_directory":"Win10-Template",
       "winrm_username": "Administrator",
-      "winrm_password": "Administrator Password",
-      "esx_host": "put esxi hostname here",
-      "vcenter_host": "put vCenter host name here",
-      "vcenter_username": "put vCenter username here",
-      "vcenter_password": "put vCenter password here",
-      "vcenter_cluster" :"put vCenter cluster name  here",
-      "vcenter_datacenter":"put vCenter datacenter name here",
-      "vcenter_datastore":"put vCenter datastore name here",
-      "vcenter_vmfolder":"put vCenter VMFolder here",
-      "vcenter_portgroup":"put vCenter vm network name here"
+      "winrm_password": "VMware1!",
+      "esx_host": "192.168.1.25",
+      "vcenter_host": "bootstrapvcsa.ds.army.mil",
+      "vcenter_username": "administrator@bootstrap.mil",
+      "vcenter_password": "VMware1!",
+      "vcenter_cluster": "Bootstrap",
+      "vcenter_datacenter":"Datacenter",
+      "vcenter_datastore": "P3605",
+      "vcenter_vmfolder": "Template",
+      "vcenter_portgroup": "Management"
     },
     "builders": [
       {
         "type": "vsphere-iso",
-        "vmname": "Win-Svr - Template",
+        "vm_name": "WS2019-Template",
         "communicator": "winrm",
         "iso_url": "{{user `iso_url`}}",
         "iso_checksum": "{{user `iso_checksum`}}",
@@ -34,8 +34,6 @@
         "datastore": "{{ user `vcenter_datastore` }}",
         "cluster": "{{ user `vcenter_cluster` }}",
         "folder": "{{ user `vcenter_vmfolder` }}",
-        "vcenter_type": "esx5",
-        "headless": false,
         "boot_wait": "2m",
         "winrm_username": "{{user `winrm_username`}}",
         "winrm_password":"{{user `winrm_password`}}",
@@ -44,33 +42,26 @@
         "shutdown_command": "a:\\sysprep.bat",
         "guest_os_type": "windows9srv-64",
         "CPUs": "4",
-        "RAM": "8192",
+        "RAM": "4096",
         "network_adapters": [
           {
             "network": "{{ user `vcenter_portgroup` }}",
             "network_card": "vmxnet3"
           }
         ],
-        "disk_controller_type": [ "lsisas1068" ],
+        "disk_controller_type": "lsilogic ",
         "storage": [
           {
-            "disk_size": 122880,
-            "disk_controller_index": 0,
+            "disk_size": 40960,
             "disk_thin_provisioned": true
           }
         ],
-        "vnc_port_min": 5900,
-        "vnc_port_max": 5980,
-        "version": 16,
+        "vm_version": 15,
         "floppy_files": [
           "{{user `autounattend`}}",
-          "./scripts/Fix-Network.ps1",
-          "./scripts/Enable-Winrm.ps1"
-        ],
-        "vmx_data": {
-          "RemoteDisplay.vnc.enabled": "false",
-          "RemoteDisplay.vnc.port": "5900",
-        }
+          "./windows/scripts/Fix-Network.ps1",
+          "./windows/scripts/Enable-Winrm.ps1"
+        ]
       }
     ],
     "provisioners": [
@@ -84,8 +75,8 @@
         "elevated_user": "Administrator",
         "elevated_password": "Administrator Password",
         "scripts": [
-          "./scripts/Install-VMwareTools.ps1",
-          "./scripts/Enable-CredSSP.ps1"
+          "./windows/scripts/Install-VMwareTools.ps1",
+          "./windows/scripts/Enable-CredSSP.ps1"
         ]
       },
       {
