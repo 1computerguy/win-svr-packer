@@ -40,7 +40,7 @@
       "winrm_timeout": "2h",
       "shutdown_timeout": "2h",
       "shutdown_command": "a:\\sysprep.bat",
-      "guest_os_type": "windows9srv-64",
+      "guest_os_type": "windows9Server64Guest",
       "CPUs": "4",
       "RAM": "4096",
       "network_adapters": [
@@ -49,7 +49,7 @@
           "network_card": "vmxnet3"
         }
       ],
-      "disk_controller_type": "lsilogic ",
+      "disk_controller_type": "lsilogic",
       "storage": [
         {
           "disk_size": 40960,
