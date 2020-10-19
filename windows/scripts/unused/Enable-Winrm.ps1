@@ -1,7 +1,3 @@
-$NetworkListManager = [Activator]::CreateInstance([Type]::GetTypeFromCLSID([Guid]"{DCB00C01-570F-4A9B-8D69-199FDBA5723B}"))
-$Connections = $NetworkListManager.GetNetworkConnections()
-$Connections | ForEach-Object { $_.GetNetwork().SetCategory(1) }
-
 Enable-PSRemoting -Force
 winrm quickconfig -q
 winrm quickconfig -transport:http

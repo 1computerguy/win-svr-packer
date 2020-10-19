@@ -38,8 +38,6 @@
       "winrm_username": "{{user `winrm_username`}}",
       "winrm_password":"{{user `winrm_password`}}",
       "winrm_timeout": "2h",
-      "shutdown_timeout": "2h",
-      "shutdown_command": "a:\\sysprep.bat",
       "guest_os_type": "windows9Server64Guest",
       "CPUs": "4",
       "RAM": "4096",
@@ -59,26 +57,16 @@
       "vm_version": 15,
       "floppy_files": [
         "{{user `autounattend`}}",
-        "./windows/scripts/Fix-Network.ps1",
-        "./windows/scripts/Enable-Winrm.ps1"
+        "./windows/scripts/disable-network-discovery.cmd",
+        "./windows/scripts/enable-rdp.cmd",
+        "./windows/scripts/install-vm-tools.cmd",
+        "./windows/scripts/disable-winrm.ps1",
+        "./windows/scripts/enable-winrm.ps1",
+        "./windows/scripts/set-temp.ps1"
       ]
     }
   ],
   "provisioners": [
-    {
-      "type": "file",
-      "source": "{{user `sysprep`}}",
-      "destination": "c:/Windows/Temp/unattend.xml"
-    },
-    {
-      "type": "powershell",
-      "elevated_user": "Administrator",
-      "elevated_password": "Administrator Password",
-      "scripts": [
-        "./windows/scripts/Install-VMwareTools.ps1",
-        "./windows/scripts/Enable-CredSSP.ps1"
-      ]
-    },
     {
       "type": "windows-update",
       "filters": [
