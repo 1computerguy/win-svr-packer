@@ -15,29 +15,50 @@
                 <Disk wcm:action="add">
                     <CreatePartitions>
                         <CreatePartition wcm:action="add">
-                            <Order>1</Order>
-                            <Size>500</Size>
-                            <Type>Primary</Type>
+                            <Order>2</Order>
+                            <Type>EFI</Type>
+                            <Size>100</Size>
                         </CreatePartition>
                         <CreatePartition wcm:action="add">
-                            <Order>2</Order>
+                            <Order>3</Order>
+                            <Type>MSR</Type>
+                            <Size>16</Size>
+                        </CreatePartition>
+                        <CreatePartition wcm:action="add">
+                            <Order>4</Order>
+                            <Type>Primary</Type>
                             <Extend>true</Extend>
+                        </CreatePartition>
+                        <CreatePartition wcm:action="add">
+                            <Order>1</Order>
+                            <Size>450</Size>
                             <Type>Primary</Type>
                         </CreatePartition>
                     </CreatePartitions>
                     <ModifyPartitions>
                         <ModifyPartition wcm:action="add">
+                            <Format>NTFS</Format>
+                            <Label>WinRE</Label>
                             <Order>1</Order>
                             <PartitionID>1</PartitionID>
-                            <Format>NTFS</Format>
-                            <Label>Boot</Label>
-                            <Active>true</Active>
+                            <TypeID>DE94BBA4-06D1-4D40-A16A-BFD50179D6AC</TypeID>
                         </ModifyPartition>
                         <ModifyPartition wcm:action="add">
                             <Order>2</Order>
                             <PartitionID>2</PartitionID>
-                            <Format>NTFS</Format>
                             <Label>System</Label>
+                            <Format>FAT32</Format>
+                        </ModifyPartition>
+                        <ModifyPartition wcm:action="add">
+                            <Order>3</Order>
+                            <PartitionID>3</PartitionID>
+                        </ModifyPartition>
+                        <ModifyPartition wcm:action="add">
+                            <Label>Windows</Label>
+                            <Letter>C</Letter>
+                            <Order>4</Order>
+                            <PartitionID>4</PartitionID>
+                            <Format>NTFS</Format>
                         </ModifyPartition>
                     </ModifyPartitions>
                     <DiskID>0</DiskID>
@@ -54,7 +75,7 @@
                     </InstallFrom>
                     <InstallTo>
                         <DiskID>0</DiskID>
-                        <PartitionID>2</PartitionID>
+                        <PartitionID>4</PartitionID>
                     </InstallTo>
                     <WillShowUI>OnError</WillShowUI>
                     <InstallToAvailablePartition>false</InstallToAvailablePartition>
@@ -83,14 +104,14 @@
         <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <AutoLogon>
                 <Password>
-                    <Value>VMware1!</Value>
-                    <PlainText>true</PlainText>
+                    <Value>VgBNAHcAYQByAGUAMQAhAFAAYQBzAHMAdwBvAHIAZAA=</Value>
+                    <PlainText>false</PlainText>
                 </Password>
                 <LogonCount>2</LogonCount>
                 <Username>Administrator</Username>
                 <Enabled>true</Enabled>
             </AutoLogon>
-                    <FirstLogonCommands>
+            <FirstLogonCommands>
                 <SynchronousCommand wcm:action="add">
                     <Order>1</Order>
                     <Description>Set Execution Policy 64 Bit</Description>
@@ -173,7 +194,7 @@
                     <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\enable-winrm.ps1</CommandLine>
                     <Description>Enable WinRM</Description>
                     <Order>99</Order>
-                </SynchronousCommand> 
+                </SynchronousCommand>
             </FirstLogonCommands>
             <OOBE>
                 <HideEULAPage>true</HideEULAPage>
@@ -181,17 +202,15 @@
                 <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
                 <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
                 <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
-                <NetworkLocation>Work</NetworkLocation>
                 <ProtectYourPC>1</ProtectYourPC>
             </OOBE>
-
             <UserAccounts>
                 <AdministratorPassword>
-                    <Value>VMware1!</Value>
-                    <PlainText>true</PlainText>
+                    <Value>VgBNAHcAYQByAGUAMQAhAEEAZABtAGkAbgBpAHMAdAByAGEAdABvAHIAUABhAHMAcwB3AG8AcgBkAA==</Value>
+                    <PlainText>false</PlainText>
                 </AdministratorPassword>
             </UserAccounts>
         </component>
     </settings>
-    <cpi:offlineImage cpi:source="wim:c:/wim/install.wim#Windows Server 2019 SERVERDATACENTER" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+    <cpi:offlineImage cpi:source="wim:c:/users/user/desktop/autounattendbuilder/install.wim#Windows Server 2019 SERVERDATACENTER" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
 </unattend>
