@@ -1,0 +1,12 @@
+- hosts: localhost
+  connection: local
+  vars:
+    file: vars.yml
+  vars_files:
+    - "{{ file }}"
+  tasks:
+  - import_role:
+      name: clonevm
+    vars:
+      file: vars.yml
+    ignore_errors: no

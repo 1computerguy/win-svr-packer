@@ -1,0 +1,105 @@
+autounattend: ./windows/unattend/server-2019/autounattend.xml
+esx_host: "192.168.1.25"
+iso_checksum: "sha256:7560B13B89EC3F5112DE75CAF69698EDDCADFC35FE8A82BE44BB5170B2B34DD7"
+iso_url: ./ISO/en_windows_server_2019_updated_sep_2020_x64_dvd_2d6f25f2.iso
+output_directory: Win10-Template
+state: poweredon
+sysprep: ./windows/unattend/server-2019/unattend.xml
+template_name: WS2019
+vcenter_cluster: Bootstrap
+vcenter_datacenter: Datacenter
+vcenter_datastore: P3605
+vcenter_host: 192.168.1.26
+vcenter_password: VMware1!
+vcenter_portgroup: Management
+vcenter_username: administrator@bootstrap.mil
+vcenter_vmfolder: Template
+winrm_username: "Administrator"
+winrm_password: "VMware1!"
+
+vcenter_folders:
+  - 
+    folder_name: AD
+    parent_folder: ""
+  - 
+    folder_name: Root
+    parent_folder: AD
+  - 
+    folder_name: Sub
+    parent_folder: AD
+  - 
+    folder_name: Common
+    parent_folder: AD
+
+vms: 
+  - 
+    folder: /AD/Root
+    name: dc01a
+    networks:
+    - name: Management
+      ip: 172.16.11.11
+      netmask: 255.255.255.0
+      gateway: 172.16.11.1
+      domain: cyber.local
+      dns_servers:
+        - 127.0.0.1
+  - 
+    folder: /AD/Root
+    name: dc02a
+    networks:
+    - name: Management
+      ip: 172.16.11.12
+      netmask: 255.255.255.0
+      gateway: 172.16.11.1
+      domain: cyber.local
+      dns_servers:
+        - 172.16.11.11
+  - 
+    folder: /AD/Sub
+    name: dc11a
+    networks:
+    - name: Management
+      ip: 172.16.11.13
+      netmask: 255.255.255.0
+      gateway: 172.16.11.1
+      domain: cyber.local
+      dns_servers:
+        - 172.16.11.11
+        - 172.16.11.12
+  - 
+    folder: /AD/Sub
+    name: dc12a
+    networks:
+    - name: Management
+      ip: 172.16.11.14
+      netmask: 255.255.255.0
+      gateway: 172.16.11.1
+      domain: cyber.local
+      dns_servers:
+        - 172.16.11.11
+        - 172.16.11.12
+  - 
+    folder: /AD/Common
+    name: rootca
+    networks:
+    - name: Management
+      ip: 172.16.11.15
+      netmask: 255.255.255.0
+      gateway: 172.16.11.1
+      domain: cyber.local
+      dns_servers:
+        - 172.16.11.11
+        - 172.16.11.12
+  - 
+    folder: /AD/Common
+    name: enterpriseca
+    networks:
+    - name: Management
+      ip: 172.16.11.16
+      netmask: 255.255.255.0
+      gateway: 172.16.11.1
+      domain: cyber.local
+      dns_servers:
+        - 172.16.11.11
+        - 172.16.11.12
+wait_for_ip_address: true
