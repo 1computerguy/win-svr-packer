@@ -16,6 +16,7 @@ vcenter_username: administrator@bootstrap.mil
 vcenter_vmfolder: Template
 winrm_username: "Administrator"
 winrm_password: "VMware1!"
+network_name: "{{ vcenter_portgroup }}"
 
 vcenter_folders:
   - 
@@ -33,32 +34,48 @@ vcenter_folders:
 
 vms: 
   - 
-    folder: /AD/Root
+    datacenter: "{{ vcenter_datacenter }}"
+    folder: "{{ vcenter_datacenter }}/vm/AD/Root"
     name: dc01a
     networks:
-    - name: Management
+    - 
+      name: Management
+      device_type: vmxnet3
+      type: static
       ip: 172.16.11.11
       netmask: 255.255.255.0
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
         - 127.0.0.1
+      connected: true
+      start_connected: true
   - 
-    folder: /AD/Root
+    datacenter: "{{ vcenter_datacenter }}"
+    folder: "{{ vcenter_datacenter }}/vm/AD/Root"
     name: dc02a
     networks:
-    - name: Management
+    - 
+      name: Management
+      device_type: vmxnet3
+      type: static
       ip: 172.16.11.12
       netmask: 255.255.255.0
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
         - 172.16.11.11
+      connected: true
+      start_connected: true
   - 
-    folder: /AD/Sub
+    datacenter: "{{ vcenter_datacenter }}"
+    folder: "{{ vcenter_datacenter }}/vm/AD/Sub"
     name: dc11a
     networks:
-    - name: Management
+    - 
+      name: Management
+      device_type: vmxnet3
+      type: static
       ip: 172.16.11.13
       netmask: 255.255.255.0
       gateway: 172.16.11.1
@@ -66,11 +83,17 @@ vms:
       dns_servers:
         - 172.16.11.11
         - 172.16.11.12
+      connected: true
+      start_connected: true
   - 
-    folder: /AD/Sub
+    datacenter: "{{ vcenter_datacenter }}"
+    folder: "{{ vcenter_datacenter }}/vm/AD/Sub"
     name: dc12a
     networks:
-    - name: Management
+    - 
+      name: Management
+      device_type: vmxnet3
+      type: static
       ip: 172.16.11.14
       netmask: 255.255.255.0
       gateway: 172.16.11.1
@@ -78,11 +101,17 @@ vms:
       dns_servers:
         - 172.16.11.11
         - 172.16.11.12
+      connected: true
+      start_connected: true
   - 
-    folder: /AD/Common
-    name: rootca
+    datacenter: "{{ vcenter_datacenter }}"
+    folder: "{{ vcenter_datacenter }}/vm/AD/Common"
+    name: ca01a
     networks:
-    - name: Management
+    - 
+      name: Management
+      device_type: vmxnet3
+      type: static
       ip: 172.16.11.15
       netmask: 255.255.255.0
       gateway: 172.16.11.1
@@ -90,11 +119,17 @@ vms:
       dns_servers:
         - 172.16.11.11
         - 172.16.11.12
+      connected: true
+      start_connected: true
   - 
-    folder: /AD/Common
-    name: enterpriseca
+    datacenter: "{{ vcenter_datacenter }}"
+    folder: "{{ vcenter_datacenter }}/vm/AD/Common"
+    name: ca02a
     networks:
-    - name: Management
+    - 
+      name: Management
+      device_type: vmxnet3
+      type: static
       ip: 172.16.11.16
       netmask: 255.255.255.0
       gateway: 172.16.11.1
@@ -102,4 +137,6 @@ vms:
       dns_servers:
         - 172.16.11.11
         - 172.16.11.12
+      connected: true
+      start_connected: true
 wait_for_ip_address: true

@@ -27,7 +27,7 @@
   when: 
     - vcenter_folders[item].parent_folder is defined
 
-- name: Clone the template with single DNS entry
+- name: Clone the template
   vmware_guest:
     hostname: "{{ vcenter_host }}"
     username: "{{ vcenter_username }}"
@@ -40,48 +40,40 @@
     state: poweredon
     cluster: "{{ vcenter_cluster }}"
     networks:
-      - name: "{{ item.networks.0.name }}"
+      - 
+        name: "{{ item.networks.0.name }}"
         ip: "{{ item.networks.0.ip }}"
         netmask: "{{ item.networks.0.netmask }}"
         gateway: "{{ item.networks.0.gateway }}"
         domain: "{{ item.networks.0.domain }}"
         dns_servers:
-        - "{{ item.networks.0.dns_servers.0 }}"
+        - "{{ item.networks.0.dns_servers.0 | default() }}"
+        - "{{ item.networks.0.dns_servers.1 | default() }}"
+        connected: true
+        start_connected: true
     customization:
       autologon: yes
       password: "{{ winrm_password }}"
+    wait_for_ip_address: false
+    wait_for_customization: false
+    wait_for_customization_timeout: 6000
   with_items:
     "{{ vms }}"
-  when:
-    - vms[item].networks.dns_servers.1 is not defined
   delegate_to: localhost
 
-- name: Clone the template with two DNS entries
-  vmware_guest:
+- name: Ensure all network adapters are connected
+  vmware_guest_network:
     hostname: "{{ vcenter_host }}"
     username: "{{ vcenter_username }}"
     password: "{{ vcenter_password}}"
     validate_certs: False
-    name: "{{ item.name }}"
-    template: "{{ template_name }}"
     datacenter: "{{ vcenter_datacenter }}"
-    folder: "{{ item.folder }}"
-    state: poweredon
     cluster: "{{ vcenter_cluster }}"
-    networks:
-      - name: "{{ item.networks.0.name }}"
-        ip: "{{ item.networks.0.ip }}"
-        netmask: "{{ item.networks.0.netmask }}"
-        gateway: "{{ item.networks.0.gateway }}"
-        domain: "{{ item.networks.0.domain }}"
-        dns_servers:
-        - "{{ item.networks.0.dns_servers.0 }}"
-        - "{{ item.networks.0.dns_servers.1 }}"
-    customization:
-      autologon: yes
-      password: "{{ winrm_password }}"
-  with_items:
-    "{{ vms }}"
-  when:
-    - vms[item].networks.dns_servers.0 is defined and vms[item].networks.dns_servers.1 is defined
-  delegate_to: localhost
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    network_name: "{{ item.networks.0.name }}"
+    label: "Network adapter 1"
+    device_type: vmxnet3
+    connected: true
+    start_connected: true
+  loop: "{{ vms }}"
