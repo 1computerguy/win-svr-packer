@@ -14,13 +14,14 @@
 
 -
   hosts: root_pdc
+  connection: local
   vars:
     file: vars.yml
   vars_files:
     - "{{ file }}"
   tasks:
   - import_role:
-      name: root_pdc
+      name: root_primary_dc
     vars:
       file: vars.yml
     ignore_errors: no
