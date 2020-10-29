@@ -18,6 +18,13 @@ winrm_username: "Administrator"
 winrm_password: "VMware1!"
 network_name: "{{ vcenter_portgroup }}"
 
+# Windows Domain and PowerShell DSC Variables 
+ansible_user: "Administrator"
+ansible_password: "VMware1!"
+domain_name: "cyber.local"
+domain_netbios_name: "cyber"
+safe_mode_password: "VMware1!"
+
 vcenter_folders:
   - 
     folder_name: AD

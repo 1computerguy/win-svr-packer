@@ -1,10 +1,16 @@
 ---
-primary_domain_controller:
+root_pdc:
   hosts:
-    10.5.202.4:
-replica_domain_controller:
+    172.16.11.11:
+root_rdc:
   hosts:
-    10.5.202.5:
+    172.16.11.12:
+sub_pdc:
+  hosts:
+    172.16.11.13:
+sub_rdc:
+  hosts:
+    172.16.11.14:
 fileserver:
   hosts:
     10.5.202.6:
