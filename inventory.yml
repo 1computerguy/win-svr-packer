@@ -1,16 +1,9 @@
 ---
-root_pdc:
-  hosts:
-    172.16.11.11:
-root_rdc:
-  hosts:
-    172.16.11.12:
-sub_pdc:
-  hosts:
-    172.16.11.13:
-sub_rdc:
-  hosts:
-    172.16.11.14:
-fileserver:
-  hosts:
-    10.5.202.6:
+plugin: vmware_vm_inventory
+strict: False
+hostname: 192.168.1.26
+username: administrator@bootstrap.mil
+password: VMware1!
+validate_certs: False
+with_tags: True
+

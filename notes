@@ -1,0 +1,12 @@
+- name: Create tags
+  vmware_tag:
+    hostname: "{{ vcenter_host }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password}}"
+    validate_certs: False
+    category_id: "{{ item[0].category_id }}"
+    tag_name: "{{ item[1].tags }}"
+  with_nested: 
+    - "{{ all_tag_category_facts['tag_category_facts'] }}"
+    - "{{ vms }}"
+  when: item[0].category_name == "VM"

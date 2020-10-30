@@ -1,0 +1,12 @@
+-
+  hosts: forestroot_pdc
+  vars:
+    file: vars.yml
+    ignore_errors: no
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+  roles:
+    - root_pdc
+    - common

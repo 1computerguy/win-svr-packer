@@ -1,6 +1,9 @@
 ---
+
 - name: Install ADDomainController DSC resource
   win_psmodule:
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_password }}"
     name: ADDomainController
     state: present
 

@@ -13,27 +13,13 @@
     ignore_errors: no
 
 -
-  hosts: root_pdc
-  connection: local
+  hosts: forestroot_pdc
   vars:
     file: vars.yml
-  vars_files:
-    - "{{ file }}"
-  tasks:
-  - import_role:
-      name: root_primary_dc
-    vars:
-      file: vars.yml
     ignore_errors: no
-
-#-
-#  hosts: root_rdc
-#  vars:
-#    file: vars.yml
-#    ignore_errors: no
-#  roles:
-#    - root_rdc
-#    - common
+  roles:
+    - root_pdc
+    - common
 
 #-
 #  hosts: sub_pdc

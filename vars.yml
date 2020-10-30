@@ -11,12 +11,21 @@ vcenter_datacenter: Datacenter
 vcenter_datastore: P3605
 vcenter_host: 192.168.1.26
 vcenter_password: VMware1!
-vcenter_portgroup: Management
+vcenter_portgroup: Test
 vcenter_username: administrator@bootstrap.mil
 vcenter_vmfolder: Template
 winrm_username: "Administrator"
 winrm_password: "VMware1!"
 network_name: "{{ vcenter_portgroup }}"
+
+# vCenter tags
+tags:
+  - forestroot
+  - subdomain
+  - primarydc
+  - replicadc
+  - rootca
+  - subca
 
 # Windows Domain and PowerShell DSC Variables 
 ansible_user: "Administrator"
@@ -46,7 +55,7 @@ vms:
     name: dc01a
     networks:
     - 
-      name: Management
+      name: "{{ vcenter_portgroup }}"
       device_type: vmxnet3
       type: static
       ip: 172.16.11.11
@@ -57,13 +66,16 @@ vms:
         - 127.0.0.1
       connected: true
       start_connected: true
+    tags:
+      - forestroot
+      - primarydc
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Root"
     name: dc02a
     networks:
     - 
-      name: Management
+      name: "{{ vcenter_portgroup }}"
       device_type: vmxnet3
       type: static
       ip: 172.16.11.12
@@ -74,13 +86,16 @@ vms:
         - 172.16.11.11
       connected: true
       start_connected: true
+    tags:
+      - forestroot
+      - replicadc
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Sub"
     name: dc11a
     networks:
     - 
-      name: Management
+      name: "{{ vcenter_portgroup }}"
       device_type: vmxnet3
       type: static
       ip: 172.16.11.13
@@ -92,13 +107,16 @@ vms:
         - 172.16.11.12
       connected: true
       start_connected: true
+    tags:
+      - subdomain
+      - primarydc
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Sub"
     name: dc12a
     networks:
     - 
-      name: Management
+      name: "{{ vcenter_portgroup }}"
       device_type: vmxnet3
       type: static
       ip: 172.16.11.14
@@ -110,13 +128,16 @@ vms:
         - 172.16.11.12
       connected: true
       start_connected: true
+    tags:
+      - subdomain
+      - replicadc
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Common"
     name: ca01a
     networks:
     - 
-      name: Management
+      name: "{{ vcenter_portgroup }}"
       device_type: vmxnet3
       type: static
       ip: 172.16.11.15
@@ -128,13 +149,15 @@ vms:
         - 172.16.11.12
       connected: true
       start_connected: true
+    tags:
+      - rootca
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Common"
     name: ca02a
     networks:
     - 
-      name: Management
+      name: "{{ vcenter_portgroup }}"
       device_type: vmxnet3
       type: static
       ip: 172.16.11.16
@@ -146,4 +169,6 @@ vms:
         - 172.16.11.12
       connected: true
       start_connected: true
+    tags:
+      - subca
 wait_for_ip_address: true
