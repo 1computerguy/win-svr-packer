@@ -11,30 +11,3 @@
     vars:
       file: vars.yml
     ignore_errors: no
-
--
-  hosts: forestroot_pdc
-  vars:
-    file: vars.yml
-    ignore_errors: no
-  roles:
-    - root_pdc
-    - common
-
-#-
-#  hosts: sub_pdc
-#  vars:
-#    file: vars.yml
-#    ignore_errors: no
-#  roles:
-#    - sub_pdc
-#    - common
-
-#-
-#  hosts: sub_rdc
-#  vars:
-#    file: vars.yml
-#    ignore_errors: no
-#  roles:
-#    - sub_rdc
-#    - common

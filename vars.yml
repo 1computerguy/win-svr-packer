@@ -17,6 +17,10 @@ vcenter_vmfolder: Template
 winrm_username: "Administrator"
 winrm_password: "VMware1!"
 network_name: "{{ vcenter_portgroup }}"
+# Temporary DNS server
+tempdns: "172.16.11.1"
+
+debugverbose: False
 
 # vCenter tags
 tags:
@@ -63,7 +67,7 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - 127.0.0.1
+        - "{{ tempdns }}"
       connected: true
       start_connected: true
     tags:
@@ -83,7 +87,7 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - 172.16.11.11
+        - "{{ tempdns }}"
       connected: true
       start_connected: true
     tags:
@@ -103,8 +107,7 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - 172.16.11.11
-        - 172.16.11.12
+        - "{{ tempdns }}"
       connected: true
       start_connected: true
     tags:
@@ -124,8 +127,7 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - 172.16.11.11
-        - 172.16.11.12
+        - "{{ tempdns }}"
       connected: true
       start_connected: true
     tags:
@@ -145,8 +147,7 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - 172.16.11.11
-        - 172.16.11.12
+        - "{{ tempdns }}"
       connected: true
       start_connected: true
     tags:
@@ -165,8 +166,7 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - 172.16.11.11
-        - 172.16.11.12
+        - "{{ tempdns }}"
       connected: true
       start_connected: true
     tags:

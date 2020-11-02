@@ -20,6 +20,7 @@
 
 - debug:
     var: all_tag_category_facts
+  when: debugverbose == True
 
 - name: Create the parent folders
   vcenter_folder:
@@ -124,8 +125,8 @@
     object_name: "{{ item.name }}"
   loop: "{{ vms }}"
 
-- name: Gather facts about VMs and register
-  vmware_guest_facts:
+- name: Gather info about VMs and register
+  vmware_guest_info:
     hostname: "{{ vcenter_host }}"
     username: "{{ vcenter_username }}"
     password: "{{ vcenter_password}}"
@@ -136,25 +137,8 @@
     name: "{{ item.name }}"
     folder: "{{ item.folder }}"
   loop: "{{ vms }}"
-  register: vmfacts
+  register: vminfo
 
 - debug:
-    var: vmfacts
-
-- name: Enable WinRM to be used with Ansible 
-  vmware_vm_shell:
-    hostname: "{{ vcenter_host }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-    validate_certs: False
-    vm_username: "{{ ansible_user }}"
-    vm_password: "{{ ansible_password }}"
-    vm_id: dc01a
-    vm_shell: 'c:\windows\system32\windowspowershell\v1.0\powershell.exe'
-    vm_shell_args: "" 
-    wait_for_process: true
-  with_nested:
-#    - "{{ vms }}"
-    - '-command "& {Set-ExecutionPolicy Unrestricted}"'
-    - '-command "& {Invoke-Expression ((New-Object System.Net.Webclient).DownloadString(\"https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1\"))}"'
-    - '-command "& {Set-ExecutionPolicy RemoteSigned}"'
+    var: vminfo
+  when: debugverbose == True

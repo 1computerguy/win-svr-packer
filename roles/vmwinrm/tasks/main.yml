@@ -1,0 +1,40 @@
+---
+- name: Copy Remoting for Ansible script to VM using VMware Tools
+  vmware_guest_file_operation:
+    hostname: "{{ vcenter_host }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: False
+    vm_id: "{{ item.name }}"
+    vm_username: "{{ ansible_user }}"
+    vm_password: "{{ ansible_password }}"
+    copy:
+      src: "files/ConfigureRemotingForAnsible.ps1"
+      dest: 'C:\temp\ConfigureRemotingForAnsible.ps1'
+  loop: "{{ vms }}"
+  delegate_to: localhost
+  register: copyresults
+
+- name: Show me what you got
+  debug:
+    var: copyresults
+    
+- name: Enable WinRM to be used with Ansible 
+  vmware_vm_shell:
+    hostname: "{{ vcenter_host }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: False
+    vm_username: "{{ ansible_user }}"
+    vm_password: "{{ ansible_password }}"
+    vm_id: "{{ item[0].name }}"
+    vm_shell: 'c:\windows\system32\windowspowershell\v1.0\powershell.exe'
+    vm_shell_args: "{{ item[1] }}"
+    wait_for_process: true
+  with_nested:
+    - "{{ vms }}"
+    - 
+        - '-command "& {Set-ExecutionPolicy Unrestricted}"'
+        - '-command "& {C:\TEMP\ConfigureRemotingForAnsible.ps1}"'
+        - '-command "& {Set-ExecutionPolicy RemoteSigned}"'
+    

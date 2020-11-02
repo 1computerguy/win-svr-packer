@@ -1,9 +1,0 @@
----
-plugin: vmware_vm_inventory
-strict: False
-hostname: 192.168.1.26
-username: administrator@bootstrap.mil
-password: VMware1!
-validate_certs: False
-with_tags: True
-

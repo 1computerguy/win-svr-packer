@@ -1,0 +1,21 @@
+---
+plugin: vmware_vm_inventory
+strict: False
+hostname: 192.168.1.26
+username: administrator@bootstrap.mil
+password: VMware1!
+validate_certs: False
+with_tags: False
+properties:
+- 'guest.ipAddress'
+- 'config.name'
+compose:
+  ansible_host: 'guest.ipAddress'
+  composed_var: 'config.name'
+groups:
+  VMs: True
+hostnames:
+- config.name
+filters:
+- guest.ipAddress is defined and (guest.ipAddress is match('172.16.*'))
+
