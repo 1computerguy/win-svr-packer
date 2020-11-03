@@ -1,14 +1,3 @@
-#-
-#  hosts: VMs
-#  gather_facts: yes
-#  vars:
-#    ignore_errors: yes
-#    ansible_user: Administrator
-#    ansible_password: VMware1!
-#    ansible_connection: winrm
-#    ansible_winrm_transport: basic
-#    ansible_winrm_server_cert_validation: ignore
-
 -
   hosts: localhost
   connection: local
@@ -98,6 +87,26 @@
   tasks:
   - import_role:
       name: subdomain_pdc
+    vars:
+      file: vars.yml
+    ignore_errors: no
+
+-
+  hosts: subdomainrdc
+  gather_facts: no
+  vars:
+    file: vars.yml
+    ignore_errors: no
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+    ansible_winrm_server_cert_validation: ignore
+  vars_files: 
+    - "{{ file }}"
+  tasks:
+  - import_role:
+      name: subdomain_rdc
     vars:
       file: vars.yml
     ignore_errors: no

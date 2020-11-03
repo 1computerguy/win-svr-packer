@@ -40,7 +40,7 @@
     dns_servers: "{{ item.dns }}"
   loop: "{{ dns_servers }}"
   register: setdomaindns
-  when: item['domain'] == "forestroot"
+  when: item['domain'] == "subdomain"
 
 - name: join domain
   win_domain_membership:
@@ -79,11 +79,3 @@
     
 - meta:
     refresh_inventory
-
-- name: Set DNS to Subdomain DCs
-  win_dns_client:
-    adapter_names: '*'
-    dns_servers: "{{ item.dns }}"
-  loop: "{{ dns_servers }}"
-  register: setdomaindns
-  when: (item['domain'] == "subdomain" and ansible_windows_domain_member)
