@@ -31,12 +31,30 @@ tags:
   - rootca
   - subca
 
+dns_servers:
+  - 
+    domain: "forestroot"
+    dns:
+    - 172.16.11.11
+    - 172.16.11.12
+  - 
+    domain: "subdomain"
+    dns:
+    - 172.16.11.13
+    - 172.16.11.14
+
 # Windows Domain and PowerShell DSC Variables 
 ansible_user: "Administrator"
 ansible_password: "VMware1!"
 domain_name: "cyber.local"
 domain_netbios_name: "cyber"
+sub_domain_name: "{{ sub_domain_netbios_name }}.{{ domain_name }}"
+sub_domain_netbios_name: "regiona"
 safe_mode_password: "VMware1!"
+domain_admin: "administrator@{{ domain_name }}"
+domain_admin_password: "{{ ansible_password }}"
+sub_domain_admin: "administrator@{{ sub_domain_name }}"
+sub_domain_admin_password: "{{ domain_admin_password }}"
 
 vcenter_folders:
   - 

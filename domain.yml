@@ -57,8 +57,47 @@
     - "{{ file }}"
   tasks:
   - import_role:
-      name: forestrootpdc
+      name: forestroot_pdc
     vars:
       file: vars.yml
     ignore_errors: no
 
+-
+  hosts: forestrootrdc
+  gather_facts: no
+  vars:
+    file: vars.yml
+    ignore_errors: no
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+    ansible_winrm_server_cert_validation: ignore
+  vars_files: 
+    - "{{ file }}"
+  tasks:
+  - import_role:
+      name: forestroot_rdc
+    vars:
+      file: vars.yml
+    ignore_errors: no
+
+-
+  hosts: subdomainpdc
+  gather_facts: no
+  vars:
+    file: vars.yml
+    ignore_errors: no
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+    ansible_winrm_server_cert_validation: ignore
+  vars_files: 
+    - "{{ file }}"
+  tasks:
+  - import_role:
+      name: subdomain_pdc
+    vars:
+      file: vars.yml
+    ignore_errors: no

@@ -1,8 +1,0 @@
----
-- name: Check winrm connectivity
-  win_ping:
-  register: winping
-
-- name: Set fact
-  set_fact:
-    winping: "{{ winping }}"

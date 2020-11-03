@@ -34,12 +34,13 @@
     name: GPMC
     state: present
 
-- name: Set DNS to IP
+- name: Set DNS
   win_dns_client:
     adapter_names: '*'
-    dns_servers:
-      - 127.0.0.1
-  register: setlocaldns
+    dns_servers: "{{ item.dns }}"
+  loop: "{{ dns_servers }}"
+  register: setdomaindns
+  when: item['domain'] == "forestroot"
 
 - name: install ad
   win_domain:

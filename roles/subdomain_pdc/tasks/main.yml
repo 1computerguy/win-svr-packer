@@ -1,0 +1,72 @@
+---
+- name: Install DNS
+  win_feature:
+    name: DNS
+    state: present
+
+- name: Install RSAT
+  win_feature:
+    name: RSAT
+    state: present
+
+- name: Install RSAT-AD-AdminCenter
+  win_feature:
+    name: RSAT-AD-AdminCenter
+    state: present
+
+- name: Install RSAT-ADDS-Tools
+  win_feature:
+    name: RSAT-ADDS-Tools
+    state: present
+
+- name: Install RSAT-DNS-Server
+  win_feature:
+    name: RSAT-DNS-Server
+    state: present
+
+- name: Install AD-Domain-Services
+  win_feature:
+    name: AD-Domain-Services
+    state: present
+
+- name: Install GPMC
+  win_feature:
+    name: GPMC
+    state: present
+
+- name: Set DNS to Forest Root DCs
+  win_dns_client:
+    adapter_names: '*'
+    dns_servers: "{{ item.dns }}"
+  loop: "{{ dns_servers }}"
+  register: setdomaindns
+  when: (item['domain'] == "forestroot" and not ansible_windows_domain_member)
+
+- name: install ad
+  win_domain:
+    dns_domain_name: "{{ sub_domain_name }}"
+    domain_admin_user: "{{ domain_admin }}"
+    domain_admin_password: "{{ domain_admin_password }}"
+    safe_mode_password: "{{ safe_mode_password }}"
+  register: ad
+
+- name: reboot server
+  win_reboot:
+    msg: "Installing AD. Rebooting..."
+    pre_reboot_delay: 15
+  when: ad.changed
+
+- name: Wait for system to become reachable over WinRM
+  wait_for_connection:
+    timeout: 900
+    
+- meta:
+    refresh_inventory
+
+- name: Set DNS to Subdomain DCs
+  win_dns_client:
+    adapter_names: '*'
+    dns_servers: "{{ item.dns }}"
+  loop: "{{ dns_servers }}"
+  register: setdomaindns
+  when: (item['domain'] == "subdomain" and ansible_windows_domain_member)
