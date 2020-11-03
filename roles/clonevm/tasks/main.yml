@@ -142,3 +142,6 @@
 - debug:
     var: vminfo
   when: debugverbose == True
+
+- 
+  meta: refresh_inventory

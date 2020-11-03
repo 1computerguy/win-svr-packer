@@ -1,5 +1,5 @@
 ---
-- name: Copy Remoting for Ansible script to VM using VMware Tools
+- name: Fetch success file from VM
   vmware_guest_file_operation:
     hostname: "{{ vcenter_host }}"
     username: "{{ vcenter_username }}"
@@ -8,16 +8,42 @@
     vm_id: "{{ item.name }}"
     vm_username: "{{ ansible_user }}"
     vm_password: "{{ ansible_password }}"
+    fetch:
+      src: "C:\\TEMP\\winrmsuccess.txt"
+      dest: "files/winrmsuccess.txt"
+  loop: "{{ vms }}"
+  delegate_to: localhost
+  register: successfilecopy
+  ignore_errors: True
+
+#- name: Show me output from successfilecopy
+#  debug:
+#    var: successfilecopy
+
+- name: Copy Remoting for Ansible script to VM using VMware Tools
+  vmware_guest_file_operation:
+    hostname: "{{ vcenter_host }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: False
+    vm_id: "{{ item[0].name }}"
+    vm_username: "{{ ansible_user }}"
+    vm_password: "{{ ansible_password }}"
     copy:
       src: "files/ConfigureRemotingForAnsible.ps1"
       dest: 'C:\temp\ConfigureRemotingForAnsible.ps1'
-  loop: "{{ vms }}"
+  with_nested: 
+    - "{{ vms }}"
+    - "{{ successfilecopy.results }}"
+  when: 
+    - item[1].msg is defined
+    - (item[1].invocation.module_args.vm_id == item[0].name and "not found" in item[1].msg)
   delegate_to: localhost
   register: copyresults
 
-- name: Show me what you got
-  debug:
-    var: copyresults
+#- name: Show me what you got
+#  debug:
+#    var: copyresults
     
 - name: Enable WinRM to be used with Ansible 
   vmware_vm_shell:
@@ -29,12 +55,22 @@
     vm_password: "{{ ansible_password }}"
     vm_id: "{{ item[0].name }}"
     vm_shell: 'c:\windows\system32\windowspowershell\v1.0\powershell.exe'
-    vm_shell_args: "{{ item[1] }}"
+    vm_shell_cwd: 'c:\temp'
+    vm_shell_args: "{{ item[2] }}"
     wait_for_process: true
   with_nested:
     - "{{ vms }}"
+    - "{{ successfilecopy.results }}"
     - 
         - '-command "& {Set-ExecutionPolicy Unrestricted}"'
         - '-command "& {C:\TEMP\ConfigureRemotingForAnsible.ps1}"'
         - '-command "& {Set-ExecutionPolicy RemoteSigned}"'
-    
+        - '-command "& {New-Item -Name winrmsuccess.txt -ItemType File}"'
+  when: 
+    - item[1].msg is defined
+    - (item[1].invocation.module_args.vm_id == item[0].name and "not found" in item[1].msg)
+  register: winrmenabled
+
+#- name: Show me copytowinrmsuccess contents
+#  debug:
+#    var: winrmenabled

@@ -1,13 +1,13 @@
--
-  hosts: VMs
-  gather_facts: no
-  vars:
-    ignore_errors: yes
-    ansible_user: Administrator
-    ansible_password: VMware1!
-    ansible_connection: winrm
-    ansible_winrm_transport: basic
-    ansible_winrm_server_cert_validation: ignore
+#-
+#  hosts: VMs
+#  gather_facts: yes
+#  vars:
+#    ignore_errors: yes
+#    ansible_user: Administrator
+#    ansible_password: VMware1!
+#    ansible_connection: winrm
+#    ansible_winrm_transport: basic
+#    ansible_winrm_server_cert_validation: ignore
 
 -
   hosts: localhost
@@ -22,7 +22,29 @@
     - vmwinrm
 
 -
-  hosts: VMs
+  hosts: 
+    - forestrootpdc
+    - forestrootrdc
+    - subdomainpdc
+    - subdomainrdc
+    - rootca
+    - subca
+  gather_facts: yes
+  vars:
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+    ansible_winrm_server_cert_validation: ignore
+
+-
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+-
+  hosts: forestrootpdc
+  gather_facts: no
   vars:
     file: vars.yml
     ignore_errors: no
@@ -33,7 +55,10 @@
     ansible_winrm_server_cert_validation: ignore
   vars_files: 
     - "{{ file }}"
-  roles:
-    - root_pdc
-    - common
+  tasks:
+  - import_role:
+      name: forestrootpdc
+    vars:
+      file: vars.yml
+    ignore_errors: no
 

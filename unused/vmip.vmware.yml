@@ -5,7 +5,7 @@ hostname: 192.168.1.26
 username: administrator@bootstrap.mil
 password: VMware1!
 validate_certs: False
-with_tags: False
+with_tags: True
 properties:
 - 'guest.ipAddress'
 - 'config.name'

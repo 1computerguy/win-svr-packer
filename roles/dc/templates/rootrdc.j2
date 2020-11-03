@@ -1,0 +1,16 @@
+- name: install Root RDC
+  win_dsc:
+    resource_name: ADDomainController
+    DomainName: "{{ domain_name }}"
+    domain_netbios_name: "{{ netbios_domain }}"
+    SafemodeAdministratorPassword: "{{ safe_mode_password }}"
+  no_log: no
+  register: ad
+
+- name: reboot server
+  win_reboot:
+    msg: "Installing AD. Rebooting..."
+    pre_reboot_delay: 15
+    reboot_timeout: 600
+    post_reboot_delay: 420
+  when: ad.changed

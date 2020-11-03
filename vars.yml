@@ -24,10 +24,10 @@ debugverbose: False
 
 # vCenter tags
 tags:
-  - forestroot
-  - subdomain
-  - primarydc
-  - replicadc
+  - forestrootpdc
+  - forestrootrdc
+  - subdomainpdc
+  - subdomainrdc
   - rootca
   - subca
 
@@ -71,8 +71,7 @@ vms:
       connected: true
       start_connected: true
     tags:
-      - forestroot
-      - primarydc
+      - forestrootpdc
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Root"
@@ -91,8 +90,7 @@ vms:
       connected: true
       start_connected: true
     tags:
-      - forestroot
-      - replicadc
+      - forestrootrdc
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Sub"
@@ -111,8 +109,7 @@ vms:
       connected: true
       start_connected: true
     tags:
-      - subdomain
-      - primarydc
+      - subdomainpdc
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Sub"
@@ -131,8 +128,7 @@ vms:
       connected: true
       start_connected: true
     tags:
-      - subdomain
-      - replicadc
+      - subdomainrdc
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Common"
