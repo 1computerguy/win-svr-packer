@@ -1,0 +1,26 @@
+-
+  hosts: 
+#    - forestrootpdc
+#  - forestrootrdc
+  - subdomainpdc
+#    - subdomainrdc
+#    - rootca
+#    - subca
+  gather_facts: yes
+  vars:
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+    ansible_winrm_server_cert_validation: ignore
+  tasks:
+    - name: Refresh facts 
+      setup:
+    - name: Print some debug information 
+      vars: 
+        msg: |
+          HOST Variables ("hostvars"):
+          --------------------------------
+          {{ hostvars | to_nice_yaml | trim }} 
+      debug: 
+        msg: "{{ msg.split('\n') }}"   

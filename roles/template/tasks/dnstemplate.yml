@@ -1,0 +1,4 @@
+- name: Create jinja2 task file for local DNS
+  template:
+    src: 'roles/template/templates/SetDnsToLocal.j2'
+    dest: 'roles/dc/files/SetDnsToLocal.ps1'

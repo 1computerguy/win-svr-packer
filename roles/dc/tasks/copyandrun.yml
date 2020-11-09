@@ -1,0 +1,57 @@
+---
+# tasks file for dc
+- name: Install DSC Resources
+  win_psmodule:
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_password }}"
+    name: "{{ item }}"
+    state: present
+  loop: "{{ dscmodules }}"
+
+- name: Copy the PowerShell file to first Domain PDC machine
+  win_copy:
+    src: 'files/{{ item.name }}-CreateADRootDC1.ps1'
+    dest: C:\Temp
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "forestrootpdc" and ansible_facts['hostname'] == item.name)
+
+- name: Copy the PowerShell file to first Domain RDC machine
+  win_copy:
+    src: 'files/{{ item.name }}-ConfigureADNextDC.ps1'
+    dest: C:\Temp
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "forestrootrdc" and ansible_facts['hostname'] == item.name)
+
+- name: Copy the PowerShell file to child Domain PDC machine
+  win_copy:
+    src: 'files/{{ item.name }}-CreateADChildDomainDC1.ps1'
+    dest: C:\Temp
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "childdomainpdc" and ansible_facts['hostname'] == item.name)
+
+- name: Copy the PowerShell file to child Domain RDC machine
+  win_copy:
+    src: 'files/{{ item.name }}-ConfigureChildADNextDC.ps1'
+    dest: C:\Temp
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "childdomainrdc" and ansible_facts['hostname'] == item.name)
+
+- name: Run remote PowerShell Script on Domain PDC
+  win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\{{ item.name }}-CreateADRootDC1.ps1
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "forestrootpdc" and ansible_facts['hostname'] == item.name)
+
+- name: Run remote PowerShell Script on Domain RDC
+  win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\{{ item.name }}-ConfigureADNextDC.ps1
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "forestrootrdc" and ansible_facts['hostname'] == item.name)
+
+- name: Run remote PowerShell Script on child Domain PDC
+  win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\{{ item.name }}-CreateADChildDomainDC1.ps1
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "childdomainpdc" and ansible_facts['hostname'] == item.name)
+
+- name: Run remote PowerShell Script on child Domain RDC
+  win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\{{ item.name }}-ConfigureChildADNextDC.ps1
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "childdomainrdc" and ansible_facts['hostname'] == item.name)

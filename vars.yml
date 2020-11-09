@@ -17,8 +17,9 @@ vcenter_vmfolder: Template
 winrm_username: "Administrator"
 winrm_password: "VMware1!"
 network_name: "{{ vcenter_portgroup }}"
-# Temporary DNS server
-tempdns: "172.16.11.1"
+
+# Upstream DNS server
+upstreamdns: "172.16.11.1"
 
 debugverbose: False
 
@@ -26,8 +27,8 @@ debugverbose: False
 tags:
   - forestrootpdc
   - forestrootrdc
-  - subdomainpdc
-  - subdomainrdc
+  - childdomainpdc
+  - childdomainrdc
   - rootca
   - subca
 
@@ -38,7 +39,7 @@ dns_servers:
     - 172.16.11.11
     - 172.16.11.12
   - 
-    domain: "subdomain"
+    domain: "childdomain"
     dns:
     - 172.16.11.13
     - 172.16.11.14
@@ -48,13 +49,40 @@ ansible_user: "Administrator"
 ansible_password: "VMware1!"
 domain_name: "cyber.local"
 domain_netbios_name: "cyber"
-sub_domain_name: "{{ sub_domain_netbios_name }}.{{ domain_name }}"
-sub_domain_netbios_name: "regiona"
+child_domain_name: "{{ child_domain_netbios_name }}"
+child_domain_netbios_name: "regiona"
 safe_mode_password: "VMware1!"
-domain_admin: "administrator@{{ domain_name }}"
+domain_admin: "administrator"
 domain_admin_password: "{{ ansible_password }}"
-sub_domain_admin: "administrator@{{ sub_domain_name }}"
-sub_domain_admin_password: "{{ domain_admin_password }}"
+child_domain_admin: "administrator@{{ sub_domain_name }}"
+child_domain_admin_password: "{{ domain_admin_password }}"
+additionaldisksize_gb: "10"
+# We set this to the first AD Root DC1 address
+dnsforwarder: "172.16.11.11"
+
+extradisks:
+ disk:
+ -
+  datastore: "{{ vcenter_datastore }}"  
+  scsi_controller: "0"
+  unit_number: "1"
+  size_gb: "{{ additionaldisksize_gb }}"
+  type: "thin"
+  state: "present"
+ - 
+  datastore: "{{ vcenter_datastore }}"  
+  scsi_controller: "0"
+  unit_number: "2"
+  size_gb: "{{ additionaldisksize_gb }}"
+  type: "thin"
+  state: "present"
+
+dscmodules:
+  - ActiveDirectoryDsc
+  - xActiveDirectory
+  - xStorage
+  - xNetworking
+  - ComputerManagementDSC
 
 vcenter_folders:
   - 
@@ -85,11 +113,12 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - "{{ tempdns }}"
+        - "{{ upstreamdns }}"
       connected: true
       start_connected: true
     tags:
       - forestrootpdc
+    domain: "{{ domain_name }}"
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Root"
@@ -104,15 +133,17 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - "{{ tempdns }}"
+        - "{{ upstreamdns }}"
       connected: true
       start_connected: true
     tags:
       - forestrootrdc
+    domain: "{{ domain_name }}"
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Sub"
     name: dc11a
+    disk:
     networks:
     - 
       name: "{{ vcenter_portgroup }}"
@@ -123,11 +154,12 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - "{{ tempdns }}"
+        - "{{ upstreamdns }}"
       connected: true
       start_connected: true
     tags:
-      - subdomainpdc
+      - childdomainpdc
+    domain: "{{ child_domain_name }}"
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Sub"
@@ -142,11 +174,12 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - "{{ tempdns }}"
+        - "{{ upstreamdns }}"
       connected: true
       start_connected: true
     tags:
-      - subdomainrdc
+      - childdomainrdc
+    domain: "{{ child_domain_name }}"
   - 
     datacenter: "{{ vcenter_datacenter }}"
     folder: "{{ vcenter_datacenter }}/vm/AD/Common"
@@ -161,7 +194,7 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - "{{ tempdns }}"
+        - "{{ upstreamdns }}"
       connected: true
       start_connected: true
     tags:
@@ -180,7 +213,7 @@ vms:
       gateway: 172.16.11.1
       domain: cyber.local
       dns_servers:
-        - "{{ tempdns }}"
+        - "{{ upstreamdns }}"
       connected: true
       start_connected: true
     tags:

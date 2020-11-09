@@ -1,0 +1,5 @@
+---
+# tasks file for template
+- include: template.yml
+
+- include: dnstemplate.yml

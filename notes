@@ -10,3 +10,30 @@
     - "{{ all_tag_category_facts['tag_category_facts'] }}"
     - "{{ vms }}"
   when: item[0].category_name == "VM"
+
+    - name: Refresh facts 
+      setup:
+    - name: Print some debug information 
+      vars: 
+        msg: |
+          Module Variables ("vars"):
+          --------------------------------
+          {{ vars | to_nice_yaml | trim }} 
+          
+          Environment Variables ("environment"):
+          --------------------------------
+          {{ environment | to_nice_yaml | trim }} 
+          
+          GROUP NAMES Variables ("group_names"):
+          --------------------------------
+          {{ group_names | to_nice_yaml | trim }}
+          
+          GROUPS Variables ("groups"):
+          --------------------------------
+          {{ groups | to_nice_yaml | trim }}
+          
+          HOST Variables ("hostvars"):
+          --------------------------------
+          {{ hostvars | to_nice_yaml | trim }} 
+      debug: 
+        msg: "{{ msg.split('\n') }}"   

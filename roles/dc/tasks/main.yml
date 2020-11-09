@@ -1,0 +1,5 @@
+- include: copyandrun.yml
+  until: 
+    - (ansible_facts['ansible_windows_domain_role'] == "Primary domain controller" or ansible_facts['ansible_windows_domain_role'] == "Backup domain controller")
+
+- include: setdns.yml

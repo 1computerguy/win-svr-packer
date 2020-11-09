@@ -1,0 +1,133 @@
+-
+  hosts: 
+    - forestrootpdc
+    - forestrootrdc
+    - subdomainpdc
+    - subdomainrdc
+    - rootca
+    - subca
+  gather_facts: no
+  vars:
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+    ansible_winrm_server_cert_validation: ignore
+
+-
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars:
+    file: vars.yml
+    ignore_errors: no
+  vars_files: 
+    - "{{ file }}"
+  roles:
+    - vmwinrm
+
+-
+  hosts: 
+    - forestrootpdc
+    - forestrootrdc
+    - subdomainpdc
+    - subdomainrdc
+    - rootca
+    - subca
+  gather_facts: yes
+  vars:
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+    ansible_winrm_server_cert_validation: ignore
+  ignore_errors: yes
+
+- hosts: localhost
+  vars:
+    file: vars.yml
+  vars_files: 
+    - "{{ file }}" 
+  tasks:
+    - name: Create template files
+      import_tasks: tasks/template.yml
+
+- 
+  hosts: forestrootpdc
+  gather_facts: no
+  vars:
+    file: vars.yml
+    ignore_errors: no
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+    ansible_winrm_server_cert_validation: ignore
+  vars_files: 
+    - "{{ file }}"
+  tasks:
+  - import_role:
+      name: dc
+    vars:
+      file: vars.yml
+    ignore_errors: no
+
+- 
+  hosts: forestrootrdc
+  gather_facts: no
+  vars:
+    file: vars.yml
+    ignore_errors: no
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+    ansible_winrm_server_cert_validation: ignore
+  vars_files: 
+    - "{{ file }}"
+  tasks:
+  - import_role:
+      name: dc
+    vars:
+      file: vars.yml
+    ignore_errors: no
+
+- 
+  hosts: childdomainpdc
+  gather_facts: no
+  vars:
+    file: vars.yml
+    ignore_errors: no
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+    ansible_winrm_server_cert_validation: ignore
+  vars_files: 
+    - "{{ file }}"
+  tasks:
+  - import_role:
+      name: dc
+    vars:
+      file: vars.yml
+    ignore_errors: no
+
+- 
+  hosts: childdomainrdc
+  gather_facts: no
+  vars:
+    file: vars.yml
+    ignore_errors: no
+    ansible_user: Administrator
+    ansible_password: VMware1!
+    ansible_connection: winrm
+    ansible_winrm_transport: basic
+    ansible_winrm_server_cert_validation: ignore
+  vars_files: 
+    - "{{ file }}"
+  tasks:
+  - import_role:
+      name: dc
+    vars:
+      file: vars.yml
+    ignore_errors: no

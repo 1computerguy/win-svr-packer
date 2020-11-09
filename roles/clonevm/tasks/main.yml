@@ -75,6 +75,32 @@
     folder: "{{ item.folder }}"
     state: poweredon
     cluster: "{{ vcenter_cluster }}"
+    datastore: "{{ vcenter_datastore }}"
+    cdrom:
+      -
+        state: present
+        type: none
+        controller_type: sata
+        controller_number: 0
+        unit_number: 0
+      -
+        state: absent
+        type: none
+        controller_type: sata
+        controller_number: 0
+        unit_number: 1
+      -
+        state: absent
+        type: none
+        controller_type: sata
+        controller_number: 1
+        unit_number: 0
+      -
+        state: absent
+        type: none
+        controller_type: sata
+        controller_number: 1
+        unit_number: 1
     networks:
       - 
         name: "{{ item.networks.0.name }}"
@@ -91,7 +117,7 @@
       autologon: yes
       password: "{{ winrm_password }}"
     wait_for_ip_address: false
-    wait_for_customization: false
+    wait_for_customization: true
     wait_for_customization_timeout: 6000
   with_items:
     "{{ vms }}"
@@ -112,6 +138,18 @@
     device_type: vmxnet3
     connected: true
     start_connected: true
+  loop: "{{ vms }}"
+
+- name: Add additional disks
+  vmware_guest_disk:
+    hostname: "{{ vcenter_host }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password}}"
+    validate_certs: False
+    datacenter: "{{ vcenter_datacenter }}"
+    folder: "{{ item.folder }}"
+    name: "{{ item.name }}"
+    disk: "{{ extradisks.disk }}"
   loop: "{{ vms }}"
 
 - name: Tag VMs
