@@ -6,8 +6,8 @@
   vars_files:
     - "{{ file }}"
   roles:
-#    - clonevm
-#    - vmwinrm
+    - clonevm
+    - vmwinrm
     - template
   ignore_errors: no
 
