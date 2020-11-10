@@ -19,7 +19,10 @@ winrm_password: "VMware1!"
 network_name: "{{ vcenter_portgroup }}"
 systemlocale: "en-US"
 
-# Upstream DNS server
+# How long in seconds Ansible should wait on clone vm task. Increase this if VMs are not finishing customization
+asynctimeout: 600
+
+# Upstream DNS server. Used to stand up first forest root DC.
 upstreamdns: "172.16.11.1"
 
 # Subnet prefix
@@ -61,8 +64,6 @@ domain_admin_password: "{{ ansible_password }}"
 child_domain_admin: "administrator@{{ sub_domain_name }}"
 child_domain_admin_password: "{{ domain_admin_password }}"
 additionaldisksize_gb: "10"
-# We set this to the first AD Root DC1 address
-dnsforwarder: "172.16.11.11"
 
 extradisks:
  disk:

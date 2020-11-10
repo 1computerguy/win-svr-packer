@@ -1,0 +1,9 @@
+---
+# tasks file for dc
+- name: Copy the set DNS Prereqs DSC PowerShell file to host
+  win_copy:
+    src: 'files/DnsPrereqs.ps1'
+    dest: C:\Temp
+
+- name: Run remote PowerShell Script for DNS Prereqs
+  win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\DnsPrereqs.ps1

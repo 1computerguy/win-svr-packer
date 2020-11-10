@@ -119,9 +119,22 @@
     wait_for_ip_address: false
     wait_for_customization: true
     wait_for_customization_timeout: 6000
-  with_items:
-    "{{ vms }}"
+  async: "{{ asynctimeout }}"
+  poll: 0
+  loop: "{{ vms }}"
   delegate_to: localhost
+  register: clone_results
+
+- debug:
+    var: clone_results
+
+- name: Check clone status
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  loop: "{{ clone_results.results }}"
+  register: async_poll_results
+  until: async_poll_results.finished
+  retries: 10000
 
 - name: Ensure all network adapters are connected
   vmware_guest_network:
@@ -138,7 +151,18 @@
     device_type: vmxnet3
     connected: true
     start_connected: true
+  async: "{{ asynctimeout }}"
+  poll: 0
   loop: "{{ vms }}"
+  register: netconnect_results
+
+- name: Check network adapter connect status
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  loop: "{{ netconnect_results.results }}"
+  register: netconnect_async_poll_results
+  until: netconnect_async_poll_results.finished
+  retries: 10000
 
 - name: Add additional disks
   vmware_guest_disk:
@@ -150,7 +174,18 @@
     folder: "{{ item.folder }}"
     name: "{{ item.name }}"
     disk: "{{ extradisks.disk }}"
+  async: "{{ asynctimeout }}"
+  poll: 0
   loop: "{{ vms }}"
+  register: adddisks_results
+
+- name: Check add additional disks status
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  loop: "{{ adddisks_results.results }}"
+  register: adddisks_async_poll_results
+  until: adddisks_async_poll_results.finished
+  retries: 10000
 
 - name: Tag VMs
   vmware_tag_manager:
@@ -161,7 +196,18 @@
     tag_names: "{{ item.tags }}"
     object_type: VirtualMachine
     object_name: "{{ item.name }}"
+  async: "{{ asynctimeout }}"
+  poll: 0
   loop: "{{ vms }}"
+  register: tagvms_results
+
+- name: Check tagging VM status
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  loop: "{{ tagvms_results.results }}"
+  register: tagvms_async_poll_results
+  until: tagvms_async_poll_results.finished
+  retries: 10000
 
 - name: Gather info about VMs and register
   vmware_guest_info:

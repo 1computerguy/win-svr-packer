@@ -1,5 +1,9 @@
 - include: installpsmodules.yml
 
+- include: dnsprereqs.yml
+
+- include: setdns.yml
+
 - include: setsystemlocale.yml
 
 - include: copyandrun.yml

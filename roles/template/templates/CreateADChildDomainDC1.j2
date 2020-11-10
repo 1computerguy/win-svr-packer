@@ -8,10 +8,20 @@ configuration CreateADChildDomainDC1
 {
     $ParentDomainName='{{ domain_name }}'
     $ChildDomainName='{{ child_domain_name }}'
+    $ChildFQDN='{{ child_domain_name }}.{{ domain_name }}'
     $DomainAdmin='{{ ansible_user }}'
     $RootDNSServers="{{ rootdnsserver.0 }}","{{ rootdnsserver.1 }}"
     $ChildDNSServers="{{ childdnsserver.0 }}","{{ childdnsserver.1 }}"
+    $AllDNSServers="{{ rootdnsserver.0 }}","{{ rootdnsserver.1 }}","{{ childdnsserver.0 }}","{{ childdnsserver.1 }}"
+    Write-Host "AllDNSServers are " $AllDNSServers
+    $AmRootDC = Get-ADDomain -ErrorAction Ignore | Select DNSRoot | Where-Object DNSRoot -eq $ParentDomainName
+    Write-Host "AmRootDC is " $AmRootDC
+    $AmChildDC = Get-ADDomain -ErrorAction Ignore | Select DNSRoot | Where-Object DNSRoot -eq $ChildFQDN
+    Write-Host "AmChildDC is " $AmChildDC
+    $RootDNSServerZone = Get-DnsServerZone | Where-Object ZoneName -eq $ParentDomainName
+    $ChildDNSServerZone = Get-DnsServerZone | Where-Object ZoneName -eq $ChildFQDN
     $DNSForwarder="{{ rootdnsserver.0 }}","{{ rootdnsserver.1 }}"
+
     $RetryCount=20
     $RetryIntervalSec=30
 
@@ -22,28 +32,30 @@ configuration CreateADChildDomainDC1
     [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($Admincreds.UserName)", $Admincreds.Password)
     $Interface = Get-NetAdapter | Where-Object Name -Like "Ethernet*" | Select-Object -First 1
     $InterfaceAlias = $($Interface.Name)
-
-    Import-DscResource -ModuleName xActiveDirectory, xStorage, xNetworking, ComputerManagementDSC
     
     [PSCredential]$ParentDomainCreds = New-Object System.Management.Automation.PSCredential ("${ParentDomainName}\$($Admincreds.UserName)", $Admincreds.Password)
     [PSCredential]$ChildDomainCreds = New-Object System.Management.Automation.PSCredential ("${ChildDomainName}\$($Admincreds.UserName)", $Admincreds.Password)
     $Interface = Get-NetAdapter | Where-Object Name -Like "Ethernet*" | Select-Object -First 1
     $InterfaceAlias = $($Interface.Name)
-    
-    $RootDNSServerZone = Get-DnsServerZone | Where-Object ZoneName -eq $ParentDomainName
-    $ChildDNSServerZone = Get-DnsServerZone | Where-Object ZoneName -eq $ChildDomainName
 
-    if ( $RootDNSServerZone -and $ChildDNSServerZone )
+    if ( ($RootDNSServerZone.ZoneName -eq $ParentDomainName ) -and ( $AmRootDC.DNSRoot -eq $ParentDomainName ) )
     {
-        Write-Output "You've got both zones!"
+        Write-Host "You're a Root DC!"
+        $DNSServers = $RootDNSServers
+        Write-Host "Your DNS Servers will be " $DNSServers
+    }
+    elseif ( ( $ChildDNSServerZone.ZoneName -eq $ChildFQDN ) -and ( $AmChildDC.DNSRoot -eq $ChildFQDN ) )
+    {
+        Write-Host "You're a Child DC!"
         $DNSServers = $ChildDNSServers
+        Write-Host "Your DNS Servers will be " $DNSServers
     }
     else
     {
-        Write-Output "Liutenant Dan, you ain't got no root zone!"
-        $DNSServers = $DNSForwarder + "," + $ChildDNSServers
-    }
-
+        Write-Host "You're broken, let's set your DNS to everything"
+        $DNSServers = $AllDNSServers
+        Write-Host "Your DNS Servers will be " $DNSServers
+    }           
 
     Node localhost
     {
@@ -256,7 +268,7 @@ configuration CreateADChildDomainDC1
 
         xDnsServerADZone DNSReplicationScope
         {
-            Name = $ChildDomainName + "." + $ParentDomainName
+            Name = $ChildFQDN
             ReplicationScope = "Forest"
             Ensure = "Present"
         }

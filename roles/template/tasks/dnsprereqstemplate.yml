@@ -1,0 +1,4 @@
+- name: Create jinja2 task file for DNS Prereqs
+  template:
+    src: 'roles/template/templates/DnsPrereqs.j2'
+    dest: 'roles/dc/files/DnsPrereqs.ps1'

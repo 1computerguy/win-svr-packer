@@ -5,5 +5,5 @@
     src: 'files/SetSystemLocale.ps1'
     dest: C:\Temp
 
-- name: Run remote PowerShell Script for DNS
+- name: Run remote PowerShell Script for System Locale
   win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\SetSystemLocale.ps1

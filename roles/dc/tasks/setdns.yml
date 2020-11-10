@@ -1,0 +1,9 @@
+---
+# tasks file for dc
+- name: Copy the set DNS DSC PowerShell file to host
+  win_copy:
+    src: 'files/SetDns.ps1'
+    dest: C:\Temp
+
+- name: Run remote PowerShell Script for setting DNS
+  win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\SetDns.ps1

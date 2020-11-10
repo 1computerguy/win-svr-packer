@@ -2,4 +2,8 @@
 # tasks file for template
 - include: template.yml
 
+- include: setdnstemplate.yml
+
+- include: dnsprereqstemplate.yml
+
 - include: systemlocaletemplate.yml
