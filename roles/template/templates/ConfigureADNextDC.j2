@@ -12,7 +12,7 @@ configuration ConfigureADNextDC
     $RetryCount=20
     $RetryIntervalSec=30
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration, xActiveDirectory, xStorage, xNetworking, ComputerManagementDSC
+    Import-DscResource -ModuleName PSDesiredStateConfiguration, xDnsServer, xActiveDirectory, xStorage, xNetworking, ComputerManagementDSC
     
     [System.Management.Automation.PSCredential]$Admincreds = New-Object System.Management.Automation.PSCredential ($DomainAdmin, (ConvertTo-SecureString {{ domain_admin_password }} -AsPlainText -Force))
 

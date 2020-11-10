@@ -1,0 +1,8 @@
+---
+- name: Install DSC Resources
+  win_psmodule:
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_password }}"
+    name: "{{ item }}"
+    state: present
+  loop: "{{ dscmodules }}"

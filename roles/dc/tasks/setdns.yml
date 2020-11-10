@@ -1,9 +1,0 @@
----
-# tasks file for dc
-- name: Copy the set local DNS PowerShell file to host
-  win_copy:
-    src: 'files/SetDnsToLocal.ps1'
-    dest: C:\Temp
-
-- name: Run remote PowerShell Script for DNS
-  win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\SetDnsToLocal.ps1

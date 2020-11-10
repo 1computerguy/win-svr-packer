@@ -1,0 +1,4 @@
+- name: Create jinja2 task file for System Locale
+  template:
+    src: 'roles/template/templates/SetSystemLocale.j2'
+    dest: 'roles/dc/files/SetSystemLocale.ps1'

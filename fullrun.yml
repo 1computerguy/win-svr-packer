@@ -6,8 +6,8 @@
   vars_files:
     - "{{ file }}"
   roles:
-    #- clonevm
-    #- vmwinrm
+#    - clonevm
+#    - vmwinrm
     - template
   ignore_errors: no
 
@@ -28,9 +28,6 @@
     ansible_winrm_server_cert_validation: ignore
   vars_files: 
     - "{{ file }}"
-  tasks:
-  - import_role:
-      name: dc
-    vars:
-      file: vars.yml
-    ignore_errors: no
+  roles:
+    - dc
+  ignore_errors: no

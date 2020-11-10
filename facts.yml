@@ -2,8 +2,8 @@
   hosts: 
 #    - forestrootpdc
 #  - forestrootrdc
-  - subdomainpdc
-#    - subdomainrdc
+  - childdomainpdc
+#    - childdomainrdc
 #    - rootca
 #    - subca
   gather_facts: yes
@@ -16,11 +16,14 @@
   tasks:
     - name: Refresh facts 
       setup:
-    - name: Print some debug information 
-      vars: 
-        msg: |
-          HOST Variables ("hostvars"):
-          --------------------------------
-          {{ hostvars | to_nice_yaml | trim }} 
-      debug: 
-        msg: "{{ msg.split('\n') }}"   
+    - name: Print ansible_facts
+      debug:
+        var: ansible_facts
+#    - name: Print some debug information 
+#      vars: 
+#        msg: |
+#          HOST Variables ("hostvars"):
+#          --------------------------------
+#          {{ hostvars | to_nice_yaml | trim }} 
+#      debug: 
+#        msg: "{{ msg.split('\n') }}"   

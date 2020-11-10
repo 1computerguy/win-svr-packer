@@ -1,0 +1,51 @@
+﻿$Location = 'C:\TEMP'
+
+set-location $Location
+
+$Path = (Get-Location)
+
+configuration SetSystemLocale
+{
+    Import-DscResource -ModuleName PSDesiredStateConfiguration, ComputerManagementDsc, LanguageDsc
+    Set-WinSystemLocale {{ systemlocale }}
+    $LangList = Get-WinUserLanguageList
+    $MarkedLang = $LangList | where LanguageTag -NotMatch "{{ systemlocale }}"
+    $LangList.Remove($MarkedLang)
+    Set-WinUserLanguageList $LangList -Force
+
+    Node localhost
+    {
+        LocalConfigurationManager
+        {
+            ConfigurationMode = 'ApplyOnly'
+            RebootNodeIfNeeded = $true
+        }
+        #
+        # Additional DCs must use another DC for DNS. 
+        #
+        SystemLocale SystemLocaleSet
+        {
+            IsSingleInstance = 'Yes'
+            SystemLocale     = '{{ systemlocale }}'
+        }
+
+        Language ConfigureLanguage
+        {
+        IsSingleInstance = "Yes" 
+        MUILanguage = "{{ systemlocale }}" 
+        MUIFallbackLanguage = "{{ systemlocale }}"
+        SystemLocale = "{{ systemlocale }}"
+        UserLocale = "{{ systemlocale }}"
+        CopySystem = $true 
+        CopyNewUser = $true
+        Dependson = "[SystemLocale]SystemLocaleSet"
+        }
+
+    }
+}
+
+SetSystemLocale
+
+Set-DSCLocalConfigurationManager -Computername localhost -Path .\SetSystemLocale -Force -Verbose
+
+Start-DscConfiguration -Wait -Force -Path .\SetSystemLocale -Verbose     

@@ -10,10 +10,11 @@ configuration CreateADRootDC1
     $DomainAdmin='{{ ansible_user }}'
     $DNSForwarder='{{ upstreamdns }}'
     $DNSServers="{{ rootdnsserver.0 }}","{{ rootdnsserver.1 }}"
+    $ChildDNSServers="{{ childdnsserver.0 }}","{{ childdnsserver.1 }}"
     $RetryCount=20
     $RetryIntervalSec=30
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration, xActiveDirectory, xStorage, xNetworking, ComputerManagementDSC
+    Import-DscResource -ModuleName PSDesiredStateConfiguration, xDnsServer, xActiveDirectory, xStorage, xNetworking, ComputerManagementDSC
     
     [System.Management.Automation.PSCredential]$Admincreds = New-Object System.Management.Automation.PSCredential ($DomainAdmin, (ConvertTo-SecureString {{ domain_admin_password }} -AsPlainText -Force))
 
@@ -218,6 +219,21 @@ configuration CreateADRootDC1
             Name = 'RebootAfterInstallingAD'
             DependsOn = "[xADDomain]FirstDS"
         }
+
+        xDnsServerADZone DNSReplicationScope
+        {
+            Name = $DomainName
+            ReplicationScope = "Forest"
+            Ensure = "Present"
+        }
+
+        xDnsServerADZone ReverseDnsReplicationScope
+        {
+            Name = "{{ reversednszone }}"
+            ReplicationScope = "Forest"
+            Ensure = "Present"
+        }
+
     }
 }
 

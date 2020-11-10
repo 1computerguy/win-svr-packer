@@ -1,5 +1,9 @@
-- include: copyandrun.yml
-  until: 
-    - (ansible_facts['ansible_windows_domain_role'] == "Primary domain controller" or ansible_facts['ansible_windows_domain_role'] == "Backup domain controller")
+- include: installpsmodules.yml
 
-- include: setdns.yml
+- include: setsystemlocale.yml
+
+- include: copyandrun.yml
+  #until: 
+  #  - (ansible_facts['windows_domain_role'] == "Primary domain controller" or ansible_facts['windows_domain_role'] == "Backup domain controller")
+  #when:
+  #  - (ansible_facts['windows_domain_role'] != "Primary domain controller" or ansible_facts['windows_domain_role'] != "Backup domain controller")

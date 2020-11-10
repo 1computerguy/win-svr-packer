@@ -1,0 +1,9 @@
+---
+# tasks file for dc
+- name: Copy the set system locale PowerShell file to host
+  win_copy:
+    src: 'files/SetSystemLocale.ps1'
+    dest: C:\Temp
+
+- name: Run remote PowerShell Script for DNS
+  win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\SetSystemLocale.ps1

@@ -9,11 +9,13 @@ configuration CreateADChildDomainDC1
     $ParentDomainName='{{ domain_name }}'
     $ChildDomainName='{{ child_domain_name }}'
     $DomainAdmin='{{ ansible_user }}'
+    $RootDNSServers="{{ rootdnsserver.0 }}","{{ rootdnsserver.1 }}"
+    $ChildDNSServers="{{ childdnsserver.0 }}","{{ childdnsserver.1 }}"
     $DNSForwarder="{{ rootdnsserver.0 }}","{{ rootdnsserver.1 }}"
     $RetryCount=20
     $RetryIntervalSec=30
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration, xActiveDirectory, xStorage, xNetworking, ComputerManagementDSC
+    Import-DscResource -ModuleName PSDesiredStateConfiguration, xDnsServer, xActiveDirectory, xStorage, xNetworking, ComputerManagementDSC
     
     [System.Management.Automation.PSCredential]$Admincreds = New-Object System.Management.Automation.PSCredential ($DomainAdmin, (ConvertTo-SecureString {{ domain_admin_password }} -AsPlainText -Force))
 
@@ -27,6 +29,21 @@ configuration CreateADChildDomainDC1
     [PSCredential]$ChildDomainCreds = New-Object System.Management.Automation.PSCredential ("${ChildDomainName}\$($Admincreds.UserName)", $Admincreds.Password)
     $Interface = Get-NetAdapter | Where-Object Name -Like "Ethernet*" | Select-Object -First 1
     $InterfaceAlias = $($Interface.Name)
+    
+    $RootDNSServerZone = Get-DnsServerZone | Where-Object ZoneName -eq $ParentDomainName
+    $ChildDNSServerZone = Get-DnsServerZone | Where-Object ZoneName -eq $ChildDomainName
+
+    if ( $RootDNSServerZone -and $ChildDNSServerZone )
+    {
+        Write-Output "You've got both zones!"
+        $DNSServers = $ChildDNSServers
+    }
+    else
+    {
+        Write-Output "Liutenant Dan, you ain't got no root zone!"
+        $DNSServers = $DNSForwarder + "," + $ChildDNSServers
+    }
+
 
     Node localhost
     {
@@ -200,12 +217,12 @@ configuration CreateADChildDomainDC1
         #
         xDnsServerAddress DnsServerAddress
         {
-            Address        = $DnsForwarder
+            Address        = $DnsServers
             InterfaceAlias = $InterfaceAlias
             AddressFamily  = 'IPv4'
             DependsOn = "[WindowsFeature]DNS"
         }
-               
+      
         xWaitForADDomain DscForestWait
         {
             DomainName = $ParentDomainName
@@ -235,6 +252,13 @@ configuration CreateADChildDomainDC1
         {
             Name = 'RebootAfterInstallingAD'
             DependsOn = "[xADDomain]FirstDS"
+        }
+
+        xDnsServerADZone DNSReplicationScope
+        {
+            Name = $ChildDomainName
+            ReplicationScope = "Forest"
+            Ensure = "Present"
         }
     }
 }

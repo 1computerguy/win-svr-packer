@@ -17,9 +17,13 @@ vcenter_vmfolder: Template
 winrm_username: "Administrator"
 winrm_password: "VMware1!"
 network_name: "{{ vcenter_portgroup }}"
+systemlocale: "en-US"
 
 # Upstream DNS server
 upstreamdns: "172.16.11.1"
+
+# Subnet prefix
+reversednszone: "11.16.172.in-addr.arpa"
 
 debugverbose: False
 
@@ -82,7 +86,9 @@ dscmodules:
   - xActiveDirectory
   - xStorage
   - xNetworking
-  - ComputerManagementDSC
+  - ComputerManagementDsc
+  - xDnsServer
+  - LanguageDsc
 
 vcenter_folders:
   - 

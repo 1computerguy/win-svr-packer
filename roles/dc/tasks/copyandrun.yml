@@ -1,13 +1,5 @@
 ---
 # tasks file for dc
-- name: Install DSC Resources
-  win_psmodule:
-    username: "{{ ansible_user }}"
-    password: "{{ ansible_password }}"
-    name: "{{ item }}"
-    state: present
-  loop: "{{ dscmodules }}"
-
 - name: Copy the PowerShell file to first Domain PDC machine
   win_copy:
     src: 'files/{{ item.name }}-CreateADRootDC1.ps1'
