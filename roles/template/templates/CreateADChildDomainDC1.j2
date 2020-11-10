@@ -256,7 +256,7 @@ configuration CreateADChildDomainDC1
 
         xDnsServerADZone DNSReplicationScope
         {
-            Name = $ChildDomainName
+            Name = $ChildDomainName + "." + $ParentDomainName
             ReplicationScope = "Forest"
             Ensure = "Present"
         }
