@@ -1,10 +1,4 @@
-﻿$Location = 'C:\TEMP'
-
-set-location $Location
-
-$Path = (Get-Location)
-
-configuration SetSystemLocale
+﻿configuration SetSystemLocale
 {
     Import-DscResource -ModuleName PSDesiredStateConfiguration, ComputerManagementDsc, LanguageDsc
     Set-WinSystemLocale {{ systemlocale }}
@@ -20,9 +14,7 @@ configuration SetSystemLocale
             ConfigurationMode = 'ApplyOnly'
             RebootNodeIfNeeded = $true
         }
-        #
-        # Additional DCs must use another DC for DNS. 
-        #
+
         SystemLocale SystemLocaleSet
         {
             IsSingleInstance = 'Yes'

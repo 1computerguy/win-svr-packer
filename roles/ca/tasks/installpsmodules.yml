@@ -5,4 +5,4 @@
     password: "{{ ansible_password }}"
     name: "{{ item }}"
     state: present
-  loop: "{{ dscmodules.dc }}"
+  loop: "{{ dscmodules.ca }}"

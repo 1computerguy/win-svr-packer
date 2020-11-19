@@ -47,3 +47,6 @@
   win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\{{ item.name }}-ConfigureChildADNextDC.ps1
   loop: "{{ vms }}"
   when: (item.tags.0 == "childdomainrdc" and ansible_facts['hostname'] == item.name)
+
+- name: Gather facts
+  setup:

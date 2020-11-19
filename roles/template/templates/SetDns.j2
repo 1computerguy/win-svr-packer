@@ -7,34 +7,41 @@
     $ChildDNSServers="{{ childdnsserver.0 }}","{{ childdnsserver.1 }}"
     $DNSForwarder='{{ upstreamdns }}'
     $AllDNSServers="{{ rootdnsserver.0 }}","{{ rootdnsserver.1 }}","{{ childdnsserver.0 }}","{{ childdnsserver.1 }}"
-    Write-Host "All DNS Servers are " $AllDNSServers
-    $AmRootDC = Get-ADDomain -ErrorAction Ignore | Select DNSRoot | Where-Object DNSRoot -eq $ParentDomainName
-    Write-Host "AmRootDC is " $AmRootDC
-    $AmChildDC = Get-ADDomain -ErrorAction Ignore | Select DNSRoot | Where-Object DNSRoot -eq $ChildFQDN
-    Write-Host "AmChildDC is " $AmChildDC
-    $RootDNSServerZone = Get-DnsServerZone | Where-Object ZoneName -eq $ParentDomainName
-    $ChildDNSServerZone = Get-DnsServerZone | Where-Object ZoneName -eq $ChildFQDN
+    $DomainMember = (Get-WmiObject -Class Win32_ComputerSystem).PartOfDomain
     $Interface = Get-NetAdapter | Where-Object Name -Like "Ethernet*" | Select-Object -First 1
     $InterfaceAlias = $($Interface.Name)
 
-    if ( ($RootDNSServerZone.ZoneName -eq $ParentDomainName ) -and ( $AmRootDC.DNSRoot -eq $ParentDomainName ) )
+    if ( $DomainMember -eq "True" )
     {
-        Write-Host "You're a Root DC!"
-        $DNSServers = $RootDNSServers
-        Write-Host "Your DNS Servers will be " $DNSServers
-    }
-    elseif ( ( $ChildDNSServerZone.ZoneName -eq $ChildFQDN ) -and ( $AmChildDC.DNSRoot -eq $ChildFQDN ) )
-    {
-        Write-Host "You're a Child DC!"
-        $DNSServers = $ChildDNSServers
-        Write-Host "Your DNS Servers will be " $DNSServers
+        $RootDNSServerZone = Get-DnsServerZone | Where-Object ZoneName -eq $ParentDomainName
+        $ChildDNSServerZone = Get-DnsServerZone | Where-Object ZoneName -eq $ChildFQDN
+        $DomainRole = (Get-WmiObject -Class Win32_ComputerSystem).DomainRole
+        $DomainRoleValues = "3","5","6"
+        if ( ($RootDNSServerZone.ZoneName -eq $ParentDomainName ) -and ( $DomainRole -in $DomainRoleValues ) )
+        {
+            Write-Host "You're a Root Server!"
+            $DNSServers = $RootDNSServers
+            Write-Host "Your DNS Servers will be " $DNSServers
+        }
+        elseif ( ($ChildDNSServerZone.ZoneName -eq $ChildFQDN ) -and ( $DomainRole -in $DomainRoleValues ) )
+        {
+            Write-Host "You're a Child Server!"
+            $DNSServers = $ChildDNSServers
+            Write-Host "Your DNS Servers will be " $DNSServers
+        }
+        else
+        {
+            Write-Host "You're broken, let's set your DNS to everything"
+            $DNSServers = $AllDNSServers
+            Write-Host "Your DNS Servers will be " $DNSServers
+        }
     }
     else
     {
         Write-Host "You're broken, let's set your DNS to everything"
         $DNSServers = $AllDNSServers
         Write-Host "Your DNS Servers will be " $DNSServers
-    }     
+    }       
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration, xDnsServer, xNetworking
 

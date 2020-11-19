@@ -1,0 +1,31 @@
+---
+# tasks file for ca
+- include: template.yml
+
+- include: installpsmodules.yml
+
+- include: rootca.yml
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "rootca" and ansible_facts['hostname'] == item.name)
+
+- include: subca.yml
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "subca" and ansible_facts['hostname'] == item.name)
+
+#- name: Check PowerShell DSC run status
+#  async_status:
+#    jid: "{{ psdsc_results.ansible_job_id }}"
+#  register: psdsc_async_poll_results
+#  until: psdsc_async_poll_results.finished
+#  retries: 10000
+#  when: psdsc_results is defined
+
+#- name: Check sub ca status
+#  async_status:
+#    jid: "{{ item.ansible_job_id }}"
+#  loop: "{{ subca_results }}"
+#  register: subca_async_poll_results
+#  until: subca_async_poll_results.finished
+#  retries: 10000
+#  when: subca_results is defined
+

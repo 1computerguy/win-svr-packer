@@ -1,0 +1,18 @@
+- name: Copy the PowerShell Root CA DSC Configuration Script
+  win_copy:
+    src: 'files/STANDALONE_ROOTCA.DSC.ps1'
+    dest: 'C:\Temp'
+
+#- name: Copy the PowerShell Root CA DSC PSD file
+#  win_copy:
+#    src: 'files/StandaloneRootCA.psd1'
+#    dest: 'C:\Temp'
+
+- name: Run remote PowerShell Script on Root CA
+  win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\STANDALONE_ROOTCA.DSC.ps1
+  async: "{{ asynctimeout }}"
+  poll: 0
+  register: psdsc_results
+
+#- name: Gather facts
+#  setup:

@@ -1,10 +1,4 @@
-﻿$Location = 'C:\TEMP'
-
-set-location $Location
-
-$Path = (Get-Location)
-
-configuration ConfigureADNextDC
+﻿configuration ConfigureADNextDC
 {
     $DomainName='{{ domain_name }}'
     $DomainAdmin='{{ ansible_user }}'

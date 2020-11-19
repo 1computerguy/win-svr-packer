@@ -1,0 +1,33 @@
+@{
+    AllNodes =
+    @(
+        @{
+            NodeName = '{{ subcas.0 }}'
+            CACommonName = '{{ subcacommonname }}'
+            CADistinguishedNameSuffix = '{{ cadistinguishednamesuffix }}'
+            CRLPublicationURLs = '1:C:\Windows\system32\CertSrv\CertEnroll\%3%8%9.crl\n10:ldap:///CN=%7%8,CN=%2,CN=CDP,CN=Public Key Services,CN=Services,%6%10\n2:http://{{ certpublicationhostname }}/CertEnroll/%3%8%9.crl'
+            CACertPublicationURLs = '1:C:\Windows\system32\CertSrv\CertEnroll\%1_%3%4.crt\n2:ldap:///CN=%7,CN=AIA,CN=Public Key Services,CN=Services,%6%11\n2:http://{{ certpublicationhostname }}/CertEnroll/%1_%3%4.crt'
+            CRLPeriodUnits = 52
+            CRLPeriod = 'Weeks'
+            CRLOverlapUnits = 12
+            CRLOverlapPeriod = 'Hours'
+            ValidityPeriodUnits = 10
+            ValidityPeriod = 'Years'
+            AuditFilter = 127
+            RootCAName = '{{ rootcaname }}'
+            RootCACommonName = '{{ rootcacommonname }}'
+            PSDscAllowDomainUser = $true
+            PSDscAllowPlainTextPassword = $true
+            InstallRSATTools = $true
+            InstallOnlineResponder = $true
+            InstallEnrollmentWebService = $true
+			LocalAdminPassword = '{{ winrm_password}}'
+            DomainName = '{{ domain_name }}'
+            DomainAdminPassword = '{{ winrm_password}}'
+            DCName = '{{ dcname }}'
+            DnsServers="{{ rootdnsserver.0 }}","{{ rootdnsserver.1 }}"
+        }
+		
+    );
+}
+	

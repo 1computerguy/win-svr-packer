@@ -51,6 +51,16 @@ dns_servers:
     - 172.16.11.13
     - 172.16.11.14
 
+# This is for configuring certificate authorities
+rootcacommonname: "{{ domain_name|upper }} Root CA"
+subcacommonname: "{{ domain_name|upper }} Issuing CA"
+cadistinguishednamesuffix: "DC=CYBER,DC=LOCAL"
+certpublicationhostname: "pki.{{ domain_name }}"
+rootcaname: CA01A
+subcas:
+  - CA02A
+dcname: DC01A
+
 # Windows Domain and PowerShell DSC Variables 
 ansible_user: "Administrator"
 ansible_password: "VMware1!"
@@ -83,13 +93,24 @@ extradisks:
   state: "present"
 
 dscmodules:
-  - ActiveDirectoryDsc
-  - xActiveDirectory
-  - xStorage
-  - xNetworking
-  - ComputerManagementDsc
-  - xDnsServer
-  - LanguageDsc
+  dc:
+    - ActiveDirectoryDsc
+    - xActiveDirectory
+    - xStorage
+    - xNetworking
+    - ComputerManagementDsc
+    - xDnsServer
+    - LanguageDsc
+  ca:
+    - PSDesiredStateConfiguration
+    - ActiveDirectoryCSDsc
+    - xPSDesiredStateConfiguration
+    - ComputerManagementDsc
+    - NetworkingDsc
+    - xNetworking
+    - xActiveDirectory
+    - xWebAdministration
+    - xStorage
 
 vcenter_folders:
   - 

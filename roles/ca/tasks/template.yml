@@ -1,0 +1,25 @@
+- name: Set DNS Server facts for Root Domain
+  set_fact:
+    rootdnsserver: "{{ item.dns }}"
+  loop: "{{ dns_servers }}"
+  when: item.domain == "forestroot"
+
+- name: Set DNS Server facts for Child Domain
+  set_fact:
+    childdnsserver: "{{ item.dns }}"
+  loop: "{{ dns_servers }}"
+  when: item.domain == "childdomain"
+
+- name: Create jinja2 PSD file for Standalone Root CA
+  template:
+    src: 'StandaloneRootCA.j2'
+    dest: 'C:\Temp\StandaloneRootCA.psd1'
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "rootca" and ansible_facts['hostname'] == item.name)
+
+- name: Create jinja2 PSD file for Member Subordinate CA
+  template:
+    src: 'MemberSubCA.j2'
+    dest: 'C:\Temp\MemberSubCA.psd1'
+  loop: "{{ vms }}"
+  when: (item.tags.0 == "subca" and ansible_facts['hostname'] == item.name)

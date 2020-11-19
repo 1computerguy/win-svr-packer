@@ -1,0 +1,21 @@
+- name: Copy the PowerShell Subordinate CA DSC Configuration Script
+  win_copy:
+    src: 'files/MEMBER_SUBCA.DSC.ps1'
+    dest: 'C:\Temp'
+
+#- name: Copy the PowerShell Subordinate CA DSC PSD file
+#  win_copy:
+#    src: 'files/MemberSubCA.psd1'
+#    dest: C:\Temp
+
+- name: Run remote PowerShell Script on Subordinate CA
+  win_command: powershell.exe -ExecutionPolicy ByPass -File C:\temp\MEMBER_SUBCA.DSC.ps1
+  async: "{{ asynctimeout }}"
+  poll: 0
+  register: psdsc_results
+
+#- debug:
+#    var: psdsc_results
+
+#- name: Gather facts
+#  setup:

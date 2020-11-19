@@ -1,10 +1,4 @@
-﻿$Location = 'C:\TEMP'
-
-set-location $Location
-
-$Path = (Get-Location)
-
-configuration CreateADRootDC1
+﻿configuration CreateADRootDC1
 {
     $DomainName='{{ domain_name }}'
     $DomainAdmin='{{ ansible_user }}'
