@@ -45,6 +45,12 @@ Configuration STANDALONE_ROOTCA
                 -ArgumentList ('Administrator', (ConvertTo-SecureString $Node.LocalAdminPassword -AsPlainText -Force))
         }
 
+        LocalConfigurationManager
+        {
+            ConfigurationMode = 'ApplyOnly'
+            RebootNodeIfNeeded = $true
+        }
+
         xWaitforDisk Disk1
         {
             DiskId = 1
@@ -367,7 +373,7 @@ Configuration STANDALONE_ROOTCA
             Script ShutdownRootCA
             {
                 SetScript  = {
-                    Stop-Computer
+                    Stop-Computer -Force
                 }
 
                 GetScript  = {

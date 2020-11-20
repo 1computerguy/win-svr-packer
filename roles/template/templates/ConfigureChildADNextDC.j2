@@ -220,6 +220,13 @@
             Name = 'RebootAfterInstallingAD'
             DependsOn = "[xADDomainController]NextDC"
         }
+
+        Service ADWebServices
+        {
+            Name = "ADWS"
+            StartupType = "Automatic"
+            State = "Running"
+        }
     }
 }
 

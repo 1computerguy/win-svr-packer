@@ -214,6 +214,13 @@
             DependsOn = "[xADDomain]FirstDS"
         }
 
+        Service ADWebServices
+        {
+            Name = "ADWS"
+            StartupType = "Automatic"
+            State = "Running"
+        }
+
         xDnsServerADZone DNSReplicationScope
         {
             Name = $DomainName

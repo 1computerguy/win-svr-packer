@@ -53,6 +53,12 @@ Configuration MEMBER_SUBCA
                 -ArgumentList ("$($Node.DomainName)\Administrator", (ConvertTo-SecureString $Node.DomainAdminPassword -AsPlainText -Force))
         }
 
+        LocalConfigurationManager
+        {
+            ConfigurationMode = 'ApplyOnly'
+            RebootNodeIfNeeded = $true
+        }
+        
         xWaitforDisk Disk1
         {
             DiskId = 1
