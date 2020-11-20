@@ -67,8 +67,8 @@ configuration CreateADChildDomainDC1
     }
     else
     {
-        Write-Host "You're broken, let's set your DNS to everything"
-        $DNSServers = $AllDNSServers
+        Write-Host "You're broken, let's set your DNS to Root servers"
+        $DNSServers = $RootDNSServers
         Write-Host "Your DNS Servers will be " $DNSServers
     } 
 
