@@ -21,8 +21,8 @@
   vars:
     file: vars.yml
     ignore_errors: no
-    ansible_user: Administrator
-    ansible_password: VMware1!
+    ansible_user: 
+    ansible_password: 
     ansible_connection: winrm
     ansible_winrm_transport: basic
     ansible_winrm_server_cert_validation: ignore
@@ -40,8 +40,8 @@
   vars:
     file: vars.yml
     ignore_errors: no
-    ansible_user: Administrator
-    ansible_password: VMware1!
+    ansible_user: 
+    ansible_password: 
     ansible_connection: winrm
     ansible_winrm_transport: basic
     ansible_winrm_server_cert_validation: ignore
