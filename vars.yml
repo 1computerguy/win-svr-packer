@@ -10,12 +10,12 @@ vcenter_cluster: Bootstrap
 vcenter_datacenter: Datacenter
 vcenter_datastore: P3605
 vcenter_host: 192.168.1.26
-vcenter_password: VMware1!
+vcenter_password: 
 vcenter_portgroup: Test
-vcenter_username: administrator@bootstrap.mil
+vcenter_username: 
 vcenter_vmfolder: Template
-winrm_username: "Administrator"
-winrm_password: "VMware1!"
+winrm_username: ""
+winrm_password: ""
 network_name: "{{ vcenter_portgroup }}"
 systemlocale: "en-US"
 
